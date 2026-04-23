@@ -331,6 +331,43 @@
   }
   .note-input::placeholder { color: var(--text3); }
 
+  .decision-input-wrap {
+    background: var(--bg2);
+    border: 0.5px solid var(--teal);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .decision-input-wrap .filter-q-label { color: var(--teal); margin-bottom: 8px; }
+  .decision-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 15px;
+    color: var(--text);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    resize: none;
+    -webkit-appearance: none;
+    outline: none;
+    line-height: 1.5;
+  }
+  .decision-input::placeholder { color: var(--text3); font-style: italic; }
+
+  .history-section-title {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin: 20px 0 12px;
+    font-weight: 500;
+    padding-top: 4px;
+    border-top: 0.5px solid var(--border);
+  }
+  .history-decision { font-size: 13px; color: var(--text); margin-bottom: 4px; font-style: italic; }
+
   /* Divider */
   hr { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
 
@@ -523,6 +560,11 @@
 <div id="panel-filtro" class="panel">
   <div class="section-title">Antes de cualquier movimiento importante</div>
 
+  <div class="decision-input-wrap">
+    <div class="filter-q-label">¿Qué decisión estás evaluando?</div>
+    <textarea id="decision-text" class="decision-input" rows="2" placeholder="Describe brevemente la decisión..."></textarea>
+  </div>
+
   <div class="filter-q" id="fq1">
     <div class="filter-q-label">Pregunta 1</div>
     <div class="filter-q-text">¿Esto mejora mi calidad de vida o solo mi ego?</div>
@@ -551,11 +593,10 @@
   </div>
 
   <div id="filter-result" class="filter-result"></div>
-  <textarea id="filter-note" class="note-input" rows="2" placeholder="Nota opcional sobre esta decisión..." style="display:none;"></textarea>
-  <button class="reset-btn" onclick="resetFilter()">Reiniciar filtro</button>
+  <textarea id="filter-note" class="note-input" rows="2" placeholder="Nota adicional opcional..." style="display:none;"></textarea>
+  <button class="reset-btn" onclick="resetFilter()">Evaluar otra decisión</button>
 
-  <hr>
-  <div class="section-title">Últimas decisiones evaluadas</div>
+  <div class="history-section-title">Últimas decisiones evaluadas</div>
   <div id="history-list"></div>
   <div class="bottom-safe"></div>
 </div>
@@ -636,11 +677,13 @@
   }
 
   function saveHistory(result) {
+    var decision = document.getElementById('decision-text').value.trim();
     var note = document.getElementById('filter-note').value.trim();
     var history = getHistory();
     var entry = {
       date: new Date().toLocaleDateString('es-CO', { day:'numeric', month:'short', year:'numeric' }),
       result: result,
+      decision: decision,
       note: note
     };
     history.unshift(entry);
@@ -666,7 +709,8 @@
     list.innerHTML = history.map(function(h) {
       return '<div class="history-item">' +
         '<div class="history-date">' + h.date + '</div>' +
-        '<div class="history-result ' + h.result + '">' + (h.result === 'ok' ? 'Pasó el filtro' : 'No pasó el filtro') + '</div>' +
+        (h.decision ? '<div class="history-decision">"' + h.decision + '"</div>' : '') +
+        '<div class="history-result ' + h.result + '">' + (h.result === 'ok' ? '✓ Pasó el filtro' : '✗ No pasó el filtro') + '</div>' +
         (h.note ? '<div class="history-note">' + h.note + '</div>' : '') +
         '</div>';
     }).join('');
@@ -683,6 +727,7 @@
     document.getElementById('filter-result').textContent = '';
     document.getElementById('filter-note').style.display = 'none';
     document.getElementById('filter-note').value = '';
+    document.getElementById('decision-text').value = '';
   }
 
   // Init
