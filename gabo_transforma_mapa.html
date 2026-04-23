@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gabo Transforma">
+<title>Gabo Transforma — Mapa de Vida</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --bg2: #161616;
+    --bg3: #1e1e1e;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0ede6;
+    --text2: #9a9690;
+    --text3: #5c5a57;
+    --teal: #2dd4a0;
+    --teal-dim: rgba(45,212,160,0.12);
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --coral: #e8745a;
+    --coral-dim: rgba(232,116,90,0.12);
+    --purple: #a78bfa;
+    --purple-dim: rgba(167,139,250,0.12);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96,165,250,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    padding: 52px 24px 20px;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 6px;
+    font-weight: 400;
+  }
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .header-title em {
+    font-style: italic;
+    color: var(--text2);
+  }
+  .header-date {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 8px;
+    font-weight: 400;
+  }
+
+  /* Nav tabs */
+  .nav {
+    display: flex;
+    gap: 6px;
+    padding: 0 24px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex-shrink: 0;
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+  }
+  .nav-btn.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #0e0e0e;
+    font-weight: 500;
+  }
+
+  /* Panels */
+  .panel { display: none; padding: 0 24px 100px; }
+  .panel.active { display: block; }
+
+  /* Precepto panel */
+  .precepto-block {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .precepto-block::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    color: var(--teal);
+    opacity: 0.06;
+    position: absolute;
+    top: -20px;
+    left: 12px;
+    line-height: 1;
+    pointer-events: none;
+  }
+  .precepto-label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .precepto-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+    font-weight: 400;
+  }
+  .precepto-text p { margin-bottom: 14px; }
+  .precepto-text p:last-child { margin-bottom: 0; }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .card-accent { border-left: 2px solid; }
+  .card-teal { border-left-color: var(--teal); }
+  .card-amber { border-left-color: var(--amber); }
+  .card-coral { border-left-color: var(--coral); }
+  .card-purple { border-left-color: var(--purple); }
+  .card-blue { border-left-color: var(--blue); }
+
+  .card-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .card-body {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* Tags */
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 400;
+    border: 0.5px solid;
+  }
+  .tag-teal { color: var(--teal); border-color: rgba(45,212,160,0.3); background: var(--teal-dim); }
+  .tag-amber { color: var(--amber); border-color: rgba(245,166,35,0.3); background: var(--amber-dim); }
+  .tag-coral { color: var(--coral); border-color: rgba(232,116,90,0.3); background: var(--coral-dim); }
+  .tag-purple { color: var(--purple); border-color: rgba(167,139,250,0.3); background: var(--purple-dim); }
+  .tag-blue { color: var(--blue); border-color: rgba(96,165,250,0.3); background: var(--blue-dim); }
+  .tag-gray { color: var(--text2); border-color: var(--border2); background: var(--bg3); }
+
+  /* Section title */
+  .section-title {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+    font-weight: 500;
+    padding-top: 4px;
+  }
+
+  /* Metrics grid */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .metric {
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .metric-n { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 4px; }
+  .metric-l { font-size: 11px; color: var(--text3); line-height: 1.3; }
+
+  /* Progress */
+  .progress-bg {
+    background: var(--bg3);
+    border-radius: 4px;
+    height: 4px;
+    margin-top: 10px;
+    overflow: hidden;
+  }
+  .progress-bar { height: 4px; border-radius: 4px; }
+
+  /* Row with dot */
+  .dot-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .dot-row:last-child { margin-bottom: 0; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .dot-teal { background: var(--teal); }
+  .dot-amber { background: var(--amber); }
+  .dot-coral { background: var(--coral); }
+  .dot-purple { background: var(--purple); }
+  .dot-blue { background: var(--blue); }
+  .dot-text { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
+  /* Filter */
+  .filter-q {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    transition: opacity 0.2s;
+  }
+  .filter-q-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; font-weight: 500; }
+  .filter-q-text { font-size: 15px; color: var(--text); line-height: 1.5; margin-bottom: 14px; font-family: 'Playfair Display', serif; font-style: italic; }
+  .filter-btns { display: flex; gap: 8px; }
+  .filter-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    cursor: pointer;
+    border: 0.5px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    transition: all 0.15s;
+    -webkit-appearance: none;
+  }
+  .filter-btn.yes { color: var(--teal); border-color: rgba(45,212,160,0.3); }
+  .filter-btn.no { color: var(--coral); border-color: rgba(232,116,90,0.3); }
+  .filter-btn.selected-yes { background: var(--teal-dim); color: var(--teal); border-color: var(--teal); }
+  .filter-btn.selected-no { background: var(--coral-dim); color: var(--coral); border-color: var(--coral); }
+
+  .filter-result {
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 4px;
+    display: none;
+  }
+  .filter-ok { background: var(--teal-dim); color: var(--teal); border: 0.5px solid rgba(45,212,160,0.3); }
+  .filter-no { background: var(--coral-dim); color: var(--coral); border: 0.5px solid rgba(232,116,90,0.3); }
+
+  .reset-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: 0.5px solid var(--border2);
+    color: var(--text3);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    -webkit-appearance: none;
+  }
+
+  /* History */
+  .history-item {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .history-date { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .history-result { font-size: 13px; font-weight: 500; }
+  .history-result.ok { color: var(--teal); }
+  .history-result.fail { color: var(--coral); }
+  .history-note { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.4; }
+  .history-empty { font-size: 14px; color: var(--text3); text-align: center; padding: 32px 0; font-style: italic; }
+
+  .note-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    margin-top: 10px;
+    resize: none;
+    -webkit-appearance: none;
+    outline: none;
+  }
+  .note-input::placeholder { color: var(--text3); }
+
+  /* Divider */
+  hr { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
+
+  /* Bottom nav */
+  .bottom-safe { height: 34px; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .panel.active > * {
+    animation: fadeUp 0.25s ease both;
+  }
+  .panel.active > *:nth-child(1) { animation-delay: 0.02s; }
+  .panel.active > *:nth-child(2) { animation-delay: 0.06s; }
+  .panel.active > *:nth-child(3) { animation-delay: 0.10s; }
+  .panel.active > *:nth-child(4) { animation-delay: 0.14s; }
+  .panel.active > *:nth-child(5) { animation-delay: 0.18s; }
+  .panel.active > *:nth-child(6) { animation-delay: 0.22s; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Mapa de vida</div>
+  <div class="header-title">Gabo <em>Transforma</em></div>
+  <div class="header-date" id="current-date"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('precepto', this)">Precepto</button>
+  <button class="nav-btn" onclick="showPanel('estructura', this)">Estructura</button>
+  <button class="nav-btn" onclick="showPanel('tiempos', this)">Tiempos</button>
+  <button class="nav-btn" onclick="showPanel('dinero', this)">Dinero</button>
+  <button class="nav-btn" onclick="showPanel('filtro', this)">Filtro</button>
+  <button class="nav-btn" onclick="showPanel('alertas', this)">Alertas</button>
+</div>
+
+<!-- PRECEPTO -->
+<div id="panel-precepto" class="panel active">
+  <div class="precepto-block">
+    <div class="precepto-label">Ancla central</div>
+    <div class="precepto-text">
+      <p>A partir de ahora, oriento mi vida desde la paz como piso, no como destino. Todo lo que construyo, decido o suelto parte de ahí. Si algo rompe ese piso, no es negociable, independiente de lo que prometa o cuánto cueste dejarlo ir.</p>
+      <p>Elijo el movimiento sobre la acumulación. Me llena viajar, recorrer, descubrir lugares, interactuar con la naturaleza y hacerlo acompañado — con Rubeyi, con personas reales. Las experiencias compartidas no son un lujo en mi vida, son la medida de que estoy viviendo bien.</p>
+      <p>Me equipo para vivir, no para aparentar. El dinero es la herramienta que me permite moverme, crear y disfrutar sin ansiedad. Si tengo más, me equipo mejor. Si tengo menos, me acomodo sin perder lo esencial.</p>
+      <p>Me cargo con profundidad. Las conversaciones que van al fondo, las culturas que no conozco, las historias que tienen capas, las personas que piensan y sienten distinto — eso me activa y me alimenta.</p>
+      <p>Gabo Transforma no es una estrategia, es mi forma de estar en el mundo. Es el relato de los espejos que veo a mi alrededor. Subo lo que sale, cuando sale, porque sí. La expresión es el fin, no el medio.</p>
+      <p>Estoy aprendiendo a ponerme en el centro de mi propia vida. No desde la indiferencia, sino desde la claridad de que si yo estoy bien, mi entorno se beneficia — aunque no siempre lo vean. Primero yo, para poder ser algo real para los demás.</p>
+      <p>Mi propósito no es evitar el desequilibrio. Es saber volver al centro — desde la paz, desde la claridad, desde lo que soy — incluso en medio de la exigencia y la incertidumbre. Desde ahí vivo, creo, decido y avanzo.</p>
+    </div>
+  </div>
+  <div class="bottom-safe"></div>
+</div>
+
+<!-- ESTRUCTURA -->
+<div id="panel-estructura" class="panel">
+  <div class="section-title">Tres pilares de ingreso</div>
+
+  <div class="card card-accent card-teal">
+    <div class="card-label">Pilar 1</div>
+    <div class="card-title">Base estable</div>
+    <div class="card-body">Asignación + salario. Sin estrés operativo. Cumples y desconectas.</div>
+    <div class="tags">
+      <span class="tag tag-teal">Cumple y desconecta</span>
+      <span class="tag tag-gray">No negocias paz aquí</span>
+    </div>
+  </div>
+
+  <div class="card card-accent card-amber">
+    <div class="card-label">Pilar 2</div>
+    <div class="card-title">Acelerador — trading</div>
+    <div class="card-body">Crecimiento opcional, no presión de vida. Solo capital que no afecta tu base.</div>
+    <div class="tags">
+      <span class="tag tag-amber">Capital no vital</span>
+      <span class="tag tag-amber">Bloques definidos</span>
+      <span class="tag tag-gray">Mides mensual</span>
+    </div>
+  </div>
+
+  <div class="card card-accent card-blue">
+    <div class="card-label">Pilar 3</div>
+    <div class="card-title">Activo real — parcela</div>
+    <div class="card-body">Valor + disfrute + potencial productivo. Toda inversión debe cumplir al menos 2 de 3 líneas.</div>
+    <div class="tags">
+      <span class="tag tag-blue">Valorización</span>
+      <span class="tag tag-blue">Disfrute inmediato</span>
+      <span class="tag tag-blue">Potencial simple</span>
+    </div>
+  </div>
+
+  <hr>
+  <div class="section-title">Objetivo macro</div>
+  <div class="card">
+    <div class="card-body" style="font-family:'Playfair Display',serif; font-style:italic; font-size:15px; color: var(--text); line-height:1.7;">
+      Vivir bien hoy · Construir estabilidad mañana · Crecer sin desgaste
+    </div>
+  </div>
+  <div class="bottom-safe"></div>
+</div>
+
+<!-- TIEMPOS -->
+<div id="panel-tiempos" class="panel">
+  <div class="section-title">Cadencia operativa</div>
+
+  <div class="card card-accent card-teal">
+    <div class="card-label">Diario · 10–15 min</div>
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">Bloque de trading — hora fija, no todo el día</div></div>
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">¿Qué me aporta hoy? ¿Qué me drena?</div></div>
+  </div>
+
+  <div class="card card-accent card-amber">
+    <div class="card-label">Semanal · 30 min</div>
+    <div class="dot-row"><div class="dot dot-amber"></div><div class="dot-text">¿Se cumplieron los % del ingreso?</div></div>
+    <div class="dot-row"><div class="dot dot-amber"></div><div class="dot-text">Resultado del trading sin dramatismo</div></div>
+    <div class="dot-row"><div class="dot dot-amber"></div><div class="dot-text">Una decisión sobre parcela si aplica</div></div>
+  </div>
+
+  <div class="card card-accent card-purple">
+    <div class="card-label">Mensual · 1–2 horas</div>
+    <div class="dot-row"><div class="dot dot-purple"></div><div class="dot-text">Balance real: ingresos, gastos, ahorro, trading</div></div>
+    <div class="dot-row"><div class="dot dot-purple"></div><div class="dot-text">Releer el precepto completo</div></div>
+    <div class="dot-row"><div class="dot dot-purple"></div><div class="dot-text">¿Estoy disfrutando o solo acumulando?</div></div>
+  </div>
+
+  <div class="card card-accent card-blue">
+    <div class="card-label">Semestral · medio día</div>
+    <div class="dot-row"><div class="dot dot-blue"></div><div class="dot-text">¿El plan sigue alineado con el precepto?</div></div>
+    <div class="dot-row"><div class="dot dot-blue"></div><div class="dot-text">Estado real de la parcela</div></div>
+    <div class="dot-row"><div class="dot dot-blue"></div><div class="dot-text">¿Qué suelto? ¿Qué sostengo? ¿Qué incorporo?</div></div>
+  </div>
+
+  <div class="card card-accent card-coral">
+    <div class="card-label">Primas — cuando lleguen</div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">40% → parcela (mejoras grandes)</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">30% → trading / capitalización</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">20% → disfrute fuerte (viaje, gusto real)</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">10% → reserva / colchón</div></div>
+  </div>
+  <div class="bottom-safe"></div>
+</div>
+
+<!-- DINERO -->
+<div id="panel-dinero" class="panel">
+  <div class="section-title">Distribución mensual</div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-n" style="color:var(--teal)">55%</div>
+      <div class="metric-l">Vida y disfrute</div>
+    </div>
+    <div class="metric">
+      <div class="metric-n" style="color:var(--purple)">25%</div>
+      <div class="metric-l">Inversión</div>
+    </div>
+    <div class="metric">
+      <div class="metric-n" style="color:var(--blue)">15%</div>
+      <div class="metric-l">Reserva</div>
+    </div>
+  </div>
+
+  <div class="card card-accent card-teal">
+    <div class="card-label">Vida y disfrute · 50–60%</div>
+    <div class="card-body">Gastos base, calidad de vida, gustos reales. Sin culpa cuando se usa bien.</div>
+    <div class="progress-bg"><div class="progress-bar" style="width:55%;background:var(--teal)"></div></div>
+  </div>
+
+  <div class="card card-accent card-purple">
+    <div class="card-label">Inversión / crecimiento · 20–30%</div>
+    <div class="card-body">Parcela + capital de trading. Solo lo que no afecta tu vida base.</div>
+    <div class="progress-bg"><div class="progress-bar" style="width:25%;background:var(--purple)"></div></div>
+  </div>
+
+  <div class="card card-accent card-blue">
+    <div class="card-label">Reserva / colchón · 10–20%</div>
+    <div class="card-body">Liquidez, imprevistos, paz mental. No se toca salvo emergencia real.</div>
+    <div class="progress-bg"><div class="progress-bar" style="width:15%;background:var(--blue)"></div></div>
+  </div>
+
+  <hr>
+  <div class="section-title">Regla del trading</div>
+  <div class="card">
+    <div class="card-body">No aumentas riesgo para recuperar. No dependes de él para vivir. Mides en meses, no en días.</div>
+  </div>
+  <div class="bottom-safe"></div>
+</div>
+
+<!-- FILTRO -->
+<div id="panel-filtro" class="panel">
+  <div class="section-title">Antes de cualquier movimiento importante</div>
+
+  <div class="filter-q" id="fq1">
+    <div class="filter-q-label">Pregunta 1</div>
+    <div class="filter-q-text">¿Esto mejora mi calidad de vida o solo mi ego?</div>
+    <div class="filter-btns">
+      <button class="filter-btn yes" onclick="answer(1,true)">Calidad de vida</button>
+      <button class="filter-btn no" onclick="answer(1,false)">Solo ego</button>
+    </div>
+  </div>
+
+  <div class="filter-q" id="fq2">
+    <div class="filter-q-label">Pregunta 2</div>
+    <div class="filter-q-text">¿Esto me da retorno real o solo me ocupa?</div>
+    <div class="filter-btns">
+      <button class="filter-btn yes" onclick="answer(2,true)">Da retorno</button>
+      <button class="filter-btn no" onclick="answer(2,false)">Solo me ocupa</button>
+    </div>
+  </div>
+
+  <div class="filter-q" id="fq3">
+    <div class="filter-q-label">Pregunta 3</div>
+    <div class="filter-q-text">¿Esto es simple o innecesariamente complicado?</div>
+    <div class="filter-btns">
+      <button class="filter-btn yes" onclick="answer(3,true)">Es simple</button>
+      <button class="filter-btn no" onclick="answer(3,false)">Muy complicado</button>
+    </div>
+  </div>
+
+  <div id="filter-result" class="filter-result"></div>
+  <textarea id="filter-note" class="note-input" rows="2" placeholder="Nota opcional sobre esta decisión..." style="display:none;"></textarea>
+  <button class="reset-btn" onclick="resetFilter()">Reiniciar filtro</button>
+
+  <hr>
+  <div class="section-title">Últimas decisiones evaluadas</div>
+  <div id="history-list"></div>
+  <div class="bottom-safe"></div>
+</div>
+
+<!-- ALERTAS -->
+<div id="panel-alertas" class="panel">
+  <div class="section-title">Señales de alerta — ajusta o pausa</div>
+
+  <div class="card card-accent card-coral">
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">El trading consume más energía de la que aporta</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">La parcela se siente carga, no activo</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">Estás comparándote o actuando por presión externa</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">El 55% de disfrute se está sacrificando</div></div>
+    <div class="dot-row"><div class="dot dot-coral"></div><div class="dot-text">Tiempo libre de calidad, solo y sin posibilidad de compartirlo</div></div>
+  </div>
+
+  <div class="section-title" style="margin-top:8px;">Señales de que el sistema funciona</div>
+
+  <div class="card card-accent card-teal">
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">Ingresos estables, sin estrés de base</div></div>
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">Disfrutas el dinero sin culpa</div></div>
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">El trading crece de forma consistente</div></div>
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">La parcela avanza y la disfrutas al mismo tiempo</div></div>
+    <div class="dot-row"><div class="dot dot-teal"></div><div class="dot-text">Gabo Transforma fluye sin obligación</div></div>
+  </div>
+
+  <hr>
+  <div class="card" style="background:transparent; border-color: var(--border);">
+    <div class="card-body" style="font-family:'Playfair Display',serif; font-style:italic; font-size:14px; color:var(--text2); line-height:1.8;">
+      "Mi propósito no es evitar el desequilibrio. Es desarrollar la capacidad de volver al centro."
+    </div>
+  </div>
+  <div class="bottom-safe"></div>
+</div>
+
+<script>
+  // Date
+  const d = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  document.getElementById('current-date').textContent = d.toLocaleDateString('es-CO', opts);
+
+  // Panel switching
+  function showPanel(name, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Filter logic
+  var answers = {};
+
+  function answer(q, val) {
+    answers[q] = val;
+    var ids = ['fq1','fq2','fq3'];
+    var btns = document.getElementById(ids[q-1]).querySelectorAll('.filter-btn');
+    btns[0].className = 'filter-btn yes' + (val === true ? ' selected-yes' : '');
+    btns[1].className = 'filter-btn no' + (val === false ? ' selected-no' : '');
+
+    var total = Object.keys(answers).length;
+    if (total === 3) {
+      var ok = Object.values(answers).filter(Boolean).length;
+      var no = 3 - ok;
+      var r = document.getElementById('filter-result');
+      var note = document.getElementById('filter-note');
+      r.style.display = 'block';
+      note.style.display = 'block';
+      if (no >= 2) {
+        r.className = 'filter-result filter-no';
+        r.textContent = 'No va. Falla en ' + no + ' de 3. Simplifica o suelta este movimiento.';
+      } else {
+        r.className = 'filter-result filter-ok';
+        r.textContent = 'Pasa el filtro. Puedes avanzar con claridad interna.';
+      }
+      // Save to history after 2 seconds
+      setTimeout(function() { saveHistory(no >= 2 ? 'fail' : 'ok'); }, 2000);
+    }
+  }
+
+  function saveHistory(result) {
+    var note = document.getElementById('filter-note').value.trim();
+    var history = getHistory();
+    var entry = {
+      date: new Date().toLocaleDateString('es-CO', { day:'numeric', month:'short', year:'numeric' }),
+      result: result,
+      note: note
+    };
+    history.unshift(entry);
+    if (history.length > 7) history = history.slice(0, 7);
+    try { localStorage.setItem('gt_history', JSON.stringify(history)); } catch(e) {}
+    renderHistory();
+  }
+
+  function getHistory() {
+    try {
+      var h = localStorage.getItem('gt_history');
+      return h ? JSON.parse(h) : [];
+    } catch(e) { return []; }
+  }
+
+  function renderHistory() {
+    var list = document.getElementById('history-list');
+    var history = getHistory();
+    if (!history.length) {
+      list.innerHTML = '<div class="history-empty">Aún no hay decisiones evaluadas.</div>';
+      return;
+    }
+    list.innerHTML = history.map(function(h) {
+      return '<div class="history-item">' +
+        '<div class="history-date">' + h.date + '</div>' +
+        '<div class="history-result ' + h.result + '">' + (h.result === 'ok' ? 'Pasó el filtro' : 'No pasó el filtro') + '</div>' +
+        (h.note ? '<div class="history-note">' + h.note + '</div>' : '') +
+        '</div>';
+    }).join('');
+  }
+
+  function resetFilter() {
+    answers = {};
+    ['fq1','fq2','fq3'].forEach(function(id) {
+      document.getElementById(id).querySelectorAll('.filter-btn').forEach(function(b) {
+        b.className = b.classList.contains('yes') ? 'filter-btn yes' : 'filter-btn no';
+      });
+    });
+    document.getElementById('filter-result').style.display = 'none';
+    document.getElementById('filter-result').textContent = '';
+    document.getElementById('filter-note').style.display = 'none';
+    document.getElementById('filter-note').value = '';
+  }
+
+  // Init
+  renderHistory();
+</script>
+</body>
+</html>
